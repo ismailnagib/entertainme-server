@@ -3,24 +3,26 @@ const redisClient = require('redis').createClient()
 
 module.exports = {
     
-    showAll (req, res) {
-        redisClient.get('movie-all', (err, data) => {
-            if (err) {
-                res.status(500).json(err.response.data)
-            } else if (data) {
-                res.status(200).json(JSON.parse(data))
-            } else {
-                axios({
-                    url: 'http://localhost:3001'
-                })
-                .then(({ data }) => {
-                    redisClient.set('movie-all', JSON.stringify(data), 'EX', 3600)
-                    res.status(200).json(data)
-                })
-                .catch(err => {
-                    res.status(500).json(err.response.data)
-                })
-            }
+    showAll () {
+        return new Promise((resolve, reject) => {
+            redisClient.get('movie-all', (err, data) => {
+                if (err) {
+                    reject(err.response.data)
+                } else if (data) {
+                    resolve(JSON.parse(data))
+                } else {
+                    axios({
+                        url: 'http://localhost:3001'
+                    })
+                    .then(({ data }) => {
+                        redisClient.set('movie-all', JSON.stringify(data.data))
+                        resolve(data.data)
+                    })
+                    .catch(err => {
+                        reject(err.response.data)
+                    })
+                }
+            })
         })
     },
 
@@ -44,7 +46,6 @@ module.exports = {
         })
         .then(({ data }) => {
             redisClient.del('movie-all')
-            redisClient.del('all-data')
             res.status(200).json(data)
         })
         .catch(err => {
@@ -74,7 +75,6 @@ module.exports = {
         })
         .then(({ data }) => {
             redisClient.del('movie-all')
-            redisClient.del('all-data')
             res.status(200).json(data)
         })
         .catch(err => {
@@ -89,7 +89,6 @@ module.exports = {
         })
         .then(({ data }) => {
             redisClient.del('movie-all')
-            redisClient.del('all-data')
             res.status(200).json(data)
         })
         .catch(err => {
