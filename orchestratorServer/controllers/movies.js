@@ -42,18 +42,20 @@ module.exports = {
         })
     },
 
-    create (req, res) {
-        axios({
-            url: `http://localhost:3001`,
-            method: 'post',
-            data: req.body
-        })
-        .then(({ data }) => {
-            redisClient.del('movie-all')
-            res.status(200).json(data)
-        })
-        .catch(err => {
-            res.status(500).json(err.response.data)
+    create (input) {
+        return new Promise((resolve, reject) => {
+            axios({
+                url: `http://localhost:3001`,
+                method: 'post',
+                data: input
+            })
+            .then(({ data }) => {
+                redisClient.del('movie-all')
+                resolve([data.data])
+            })
+            .catch(err => {
+                reject(err.response.data)
+            })
         })
     },
 

@@ -31,7 +31,7 @@ module.exports = {
     showOne (id) {
         return new Promise((resolve, reject) => {
             axios({
-                url: `http://localhost:3001/${id}`
+                url: `http://localhost:3002/${id}`
             })
             .then(({ data }) => {
                 resolve([data.datum])
@@ -42,18 +42,20 @@ module.exports = {
         })
     },
 
-    create (req, res) {
-        axios({
-            url: `http://localhost:3002`,
-            method: 'post',
-            data: req.body
-        })
-        .then(({ data }) => {
-            redisClient.del('tvs-all')
-            res.status(200).json(data)
-        })
-        .catch(err => {
-            res.status(500).json(err.response.data)
+    create (input) {
+        return new Promise((resolve, reject) => {
+            axios({
+                url: `http://localhost:3002`,
+                method: 'post',
+                data: input
+            })
+            .then(({ data }) => {
+                redisClient.del('tvs-all')
+                resolve([data.data])
+            })
+            .catch(err => {
+                reject(err.response.data)
+            })
         })
     },
 
