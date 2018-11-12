@@ -28,15 +28,17 @@ module.exports = {
         })
     },
 
-    showOne (req, res) {
-        axios({
-            url: `http://localhost:3001/${req.params.id}`
-        })
-        .then(({ data }) => {
-            res.status(200).json(data)
-        })
-        .catch(err => {
-            res.status(500).json(err.response.data)
+    showOne (id) {
+        return new Promise((resolve, reject) => {
+            axios({
+                url: `http://localhost:3001/${id}`
+            })
+            .then(({ data }) => {
+                resolve([data.datum])
+            })
+            .catch(err => {
+                reject(err.response.data)
+            })
         })
     },
 
