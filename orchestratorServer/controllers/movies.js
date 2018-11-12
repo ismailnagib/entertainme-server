@@ -15,7 +15,9 @@ module.exports = {
                         url: 'http://localhost:3001'
                     })
                     .then(({ data }) => {
-                        redisClient.set('movie-all', JSON.stringify(data.data))
+                        if (data.data) {
+                            redisClient.set('movie-all', JSON.stringify(data.data), 'EX', 3600)
+                        }
                         resolve(data.data)
                     })
                     .catch(err => {

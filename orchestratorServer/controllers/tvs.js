@@ -15,7 +15,9 @@ module.exports = {
                         url: 'http://localhost:3002'
                     })
                     .then(({ data }) => {
-                        redisClient.set('tvs-all', JSON.stringify(data.data))
+                        if (data.data) {
+                            redisClient.set('tvs-all', JSON.stringify(data.data), 'EX', 3600)
+                        }
                         resolve(data.data)
                     })
                     .catch(err => {
