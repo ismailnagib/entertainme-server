@@ -73,18 +73,21 @@ module.exports = {
         })
     },
 
-    update (req, res) {
-        axios({
-            url: `http://localhost:3001/${req.params.id}`,
-            method: 'put',
-            data: req.body
-        })
-        .then(({ data }) => {
-            redisClient.del('movie-all')
-            res.status(200).json(data)
-        })
-        .catch(err => {
-            res.status(500).json(err.response.data)
+    update (changes) {
+        return new Promise((resolve, reject) => {
+            const { id, ...rest } = changes
+            axios({
+                url: `http://localhost:3001/${id}`,
+                method: 'put',
+                data: rest
+            })
+            .then(({ data }) => {
+                redisClient.del('movie-all')
+                resolve(data)
+            })
+            .catch(err => {
+                reject(err.response.data)
+            })
         })
     },
 

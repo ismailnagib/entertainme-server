@@ -94,7 +94,31 @@ const GQLSchema = new GraphQLSchema({
                     let data = TVS.create(args)
                     return data
                 }
-            }
+            },
+            editMovie: {
+                type: new GraphQLList(inputType),
+                args: {
+                    title: {
+                        type: GraphQLString
+                    },
+                    overview: {
+                        type: GraphQLString
+                    },
+                    poster_path: {
+                        type: GraphQLString
+                    },
+                    popularity: {
+                        type: GraphQLFloat
+                    },
+                    tag: {
+                        type: new GraphQLList(GraphQLString)
+                    }
+                },
+                resolve(obj, args) {
+                    let data = Movies.update(args)
+                    return data
+                }
+            },
         }
     })
 })
